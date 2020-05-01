@@ -18,6 +18,7 @@ namespace Overseas
         public JsonResponse getData()
         {
             string url = "https://my.overseas.hr/system/api/track-and-trace/get-shipment-data/" + this.brojPosiljke;
+            //string url = "https://my.overseas.hr/system/api/track-and-trace/get-shipment-data/07074954";
             using (var w = new WebClient())
             {
                 var json_data = string.Empty;
@@ -26,7 +27,9 @@ namespace Overseas
                 {
                     json_data = w.DownloadString(url);
                 }
-                catch (Exception) { }
+                catch (Exception e) {
+                    Console.WriteLine(e.Message);
+                }
                 // if string with JSON data is not empty, deserialize it to class and return its instance
                 JsonResponse jsonResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<JsonResponse>(json_data);
                 return jsonResponse;

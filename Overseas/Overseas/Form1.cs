@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Overseas
@@ -9,6 +11,7 @@ namespace Overseas
     {
         private string selectedFile = "";
         private List<JsonResponse> statusiPosiljaka = new List<JsonResponse>();
+        List<Thread> downloadThreads = new List<Thread>();
 
         public Form1()
         {
@@ -31,6 +34,7 @@ namespace Overseas
             }
         }
 
+
         private void LoadFileButton_Click(object sender, EventArgs e)
         {
             if (selectedFile == "")
@@ -45,30 +49,58 @@ namespace Overseas
 
             Console.WriteLine("Preuzimanje...");
             // iteracija po redovima excel datoteke - PREUZIMANJE SVIH STATUSA POŠILJKI
+
+            /*
+            Parallel.ForEach(dataTable.AsEnumerable(), row =>
+                {
+                    Console.WriteLine("ja sam novi thread");
+
+                    // definira se stupac za broj paketa i dodaje u listu
+                    string brojPosiljke = row["Broj paketa"].ToString();
+                    if (row["Broj paketa"].ToString() == "") return;
+
+                    downloadDataAndAddToList(brojPosiljke);
+                    ispis();
+                }
+            );
+            */
             foreach (DataRow row in dataTable.Rows)
             {
                 // definira se stupac za broj paketa i dodaje u listu
                 string brojPosiljke = row["Broj paketa"].ToString();
                 if (row["Broj paketa"].ToString() == "") continue;
 
+                string tmp = brojPosiljke;
 
+                Thread thread = new Thread(() => this.downloadDataAndAddToList(tmp));
+                downloadThreads.Add(thread);
+                Console.WriteLine(brojPosiljke);
+                thread.Start();
 
-                DataDownloader dataDownloader = new DataDownloader(brojPosiljke);
-                JsonResponse jsonResponse = dataDownloader.getData();
+                //downloadDataAndAddToList(brojPosiljke);
 
-                // dodavanje dobivenog statusa u listu svih statusa
-                statusiPosiljaka.Add(jsonResponse);
             }
+           
+        }
 
-            ispis();
-
-
-
-
+        public void downloadDataAndAddToList(string brojPosiljke)
+        {
+            DataDownloader dataDownloader = new DataDownloader(brojPosiljke);
+            JsonResponse jsonResponse = dataDownloader.getData();
+            statusiPosiljaka.Add(jsonResponse);
         }
 
         public void ispis()
         {
+            foreach(Thread thread in downloadThreads)
+            {
+                if (thread.IsAlive)
+                {
+                    Alert.showAlert("Greška", "Podatci se još preuzimaju!");
+                    return;
+                }
+            }
+
             foreach (JsonResponse jsonResponse in statusiPosiljaka)
             {
                 IList<Colly> collyList;
@@ -87,6 +119,11 @@ namespace Overseas
 
                 Console.WriteLine(Environment.NewLine);
             }
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            ispis();
         }
     }
 }
