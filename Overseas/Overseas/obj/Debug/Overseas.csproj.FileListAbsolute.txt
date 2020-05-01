@@ -18,3 +18,4 @@ G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\obj\Debug\Overse
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\bin\Debug\Json.Net.dll
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\bin\Debug\Newtonsoft.Json.dll
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\bin\Debug\Newtonsoft.Json.xml
+G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\obj\Debug\Overseas.LoadingForm.resources
