@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Threading;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -9,13 +10,22 @@ namespace Overseas
 {
     public partial class Form1 : Form
     {
+        private const string SAVED_LIST = "SavedList.dat";
         private string selectedFile = "";
         private List<JsonResponse> jsonResponsesList = new List<JsonResponse>();
-        List<Thread> downloadThreads = new List<Thread>();
+
 
         public Form1()
         {
             InitializeComponent();
+            if (File.Exists(SAVED_LIST))
+            {
+                Console.WriteLine("File pronaden");
+                jsonResponsesList = Load<JsonResponse>(SAVED_LIST);
+                addDataToGrid();
+                DateTime dateTimeFileCreated = File.GetCreationTime(SAVED_LIST);
+                dateTimeFileCreatedLabel.Text = "Popis ažuriran: " + dateTimeFileCreated.ToString();
+            }
         }
 
         private void ChooseFileButton_Click(object sender, EventArgs e)
@@ -43,6 +53,12 @@ namespace Overseas
                 return;
             }
 
+            // praznjenje liste
+
+            mainDataGrid.DataSource = null;
+            jsonResponsesList.Clear();
+            mainDataGrid.Rows.Clear();
+
             // procitaj excel datoteku
             FileReader fileReader = new FileReader(selectedFile);
             DataTable dataTable = fileReader.readFile();
@@ -54,6 +70,8 @@ namespace Overseas
             loadingForm.Show();
             Application.DoEvents();
             this.Enabled = false;
+
+            
 
             Parallel.ForEach(dataTable.AsEnumerable(), row =>
                 {
@@ -68,29 +86,15 @@ namespace Overseas
             );
 
             loadingForm.Close();
+
             this.Enabled = true;
-
-            // drugi način sa vlastitim threadovima:
-            /*
-            foreach (DataRow row in dataTable.Rows)
+            if (File.Exists(SAVED_LIST))
             {
-                // definira se stupac za broj paketa i dodaje u listu
-                string brojPosiljke = row["Broj paketa"].ToString();
-                if (row["Broj paketa"].ToString() == "") continue;
-
-                string tmp = brojPosiljke;
-
-                Thread thread = new Thread(() => this.downloadDataAndAddToList(tmp));
-                downloadThreads.Add(thread);
-                Console.WriteLine(brojPosiljke);
-                thread.Start();
-
-                //downloadDataAndAddToList(brojPosiljke);
-
+                File.Delete(SAVED_LIST);
             }
-
-            */
-           
+            Save(SAVED_LIST, jsonResponsesList);
+            addDataToGrid();
+            dateTimeFileCreatedLabel.Visible = false;
         }
 
         public void downloadDataAndAddToList(string brojPosiljke)
@@ -100,46 +104,10 @@ namespace Overseas
             jsonResponsesList.Add(jsonResponse);
         }
 
-        public void ispis()
-        {
-            Console.WriteLine(jsonResponsesList.Count);
-            addDataToGrid();
-
-            /*
-            foreach(Thread thread in downloadThreads)
-            {
-                if (thread.IsAlive)
-                {
-                    Alert.showAlert("Greška", "Podatci se još preuzimaju!");
-                    return;
-                }
-            }
-
-            foreach (JsonResponse jsonResponse in statusiPosiljaka)
-            {
-                IList<Colly> collyList;
-                collyList = jsonResponse.Collies;
-
-                IList<Trace> traceList;
-
-                foreach (Colly colly in collyList)
-                {
-                    traceList = colly.Traces;
-                    foreach (Trace trace in traceList)
-                    {
-                        Console.WriteLine(trace.ScanDateString + " " + trace.ScanTimeString + ": " + trace.StatusDescription);
-                    }
-                }
-
-                Console.WriteLine(Environment.NewLine);
-            }
-            */
-        }
-
-
 
         private void addDataToGrid()
         {
+            mainDataGrid.Refresh();
             mainDataGrid.DataSource = jsonResponsesList;
             
             // prolaz kroz sve zapise
@@ -154,10 +122,6 @@ namespace Overseas
 
         }
 
-        private void Button1_Click(object sender, EventArgs e)
-        {
-            ispis();
-        }
 
         private void MainDataGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -190,9 +154,58 @@ namespace Overseas
             detailsGrid.Columns[5].Width = 300;
             detailsGrid.Columns[6].Width = 150;
             detailsGrid.Columns[7].Width = 200;
+        }
+
+        /// <summary>
+        /// Saves the object information
+        /// </summary>
+        public static void Save<T>(string fileName, List<T> list)
+        {
+            // Gain code access to the file that we are going
+            // to write to
+            try
+            {
+                // Create a FileStream that will write data to file.
+                using (var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+                {
+                    var formatter = new BinaryFormatter();
+                    formatter.Serialize(stream, list);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
 
 
+        public static List<T> Load<T>(string fileName)
+        {
+            var list = new List<T>();
+            // Check if we had previously Save information of our friends
+            // previously
+            if (File.Exists(fileName))
+            {
 
+                try
+                {
+                    // Create a FileStream will gain read access to the
+                    // data file.
+                    using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+                    {
+                        var formatter = new BinaryFormatter();
+                        list = (List<T>)
+                            formatter.Deserialize(stream);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+            }
+            return list;
         }
     }
 }

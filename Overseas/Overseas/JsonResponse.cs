@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Overseas
 {
+    [Serializable]
     public class Sender
     {
         public string Country { get; set; }
@@ -17,6 +18,7 @@ namespace Overseas
         public object GeoCoordX { get; set; }
     }
 
+    [Serializable]
     public class Consignee
     {
         public string Country { get; set; }
@@ -30,10 +32,12 @@ namespace Overseas
         public object GeoCoordX { get; set; }
     }
 
+    [Serializable]
     public class Errors
     {
     }
 
+    [Serializable]
     public class LastShipmentTrace
     {
         public string ParcelNumber { get; set; }
@@ -48,12 +52,14 @@ namespace Overseas
         public bool HasErrors { get; set; }
     }
 
+    [Serializable]
     public class Message
     {
         public string Title { get; set; }
         public string Body { get; set; }
     }
 
+    [Serializable]
     public class Trace
     {
         public string ParcelNumber { get; set; }
@@ -67,6 +73,7 @@ namespace Overseas
         public bool HasErrors { get; set; }
     }
 
+    [Serializable]
     public class Colly
     {
         public string CargonetColliId { get; set; }
@@ -78,6 +85,7 @@ namespace Overseas
         public IList<Trace> Traces { get; set; }
     }
 
+    [Serializable]
     public class JsonResponse
     {
         public string CargonetCountryPrefix { get; set; }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Net;
-using Json;
-using Newtonsoft;
-
+using System.Text;
 
 namespace Overseas
 {
@@ -19,7 +17,8 @@ namespace Overseas
         {
             string url = "https://my.overseas.hr/system/api/track-and-trace/get-shipment-data/" + this.brojPosiljke;
             //string url = "https://my.overseas.hr/system/api/track-and-trace/get-shipment-data/07074954";
-            using (var w = new WebClient())
+
+            using (var w = new WebClient() { Encoding = Encoding.UTF8})
             {
                 var json_data = string.Empty;
                 // attempt to download JSON data as a string
