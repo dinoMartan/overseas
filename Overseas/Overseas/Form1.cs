@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace Overseas
         public Form1()
         {
             InitializeComponent();
+            hideAllLabels();
             if (File.Exists(SAVED_LIST))
             {
                 Console.WriteLine("File pronaden");
@@ -28,11 +30,37 @@ namespace Overseas
             }
         }
 
+        private void hideAllLabels()
+        {
+            statusDescriptionLabel.Visible = false;
+
+            scanDateStringLabel.Visible = false;
+            ScanTimeStringLabel.Visible = false;
+            statusNumberLabel.Visible = false;
+
+            countryLabel.Visible = false;
+            postalCodeLabel.Visible = false;
+            cityLabel.Visible = false;
+        }
+
+        private void showAllLabels()
+        {
+            statusDescriptionLabel.Visible = true;
+
+            scanDateStringLabel.Visible = true;
+            ScanTimeStringLabel.Visible = true;
+            statusNumberLabel.Visible = true;
+
+            countryLabel.Visible = true;
+            postalCodeLabel.Visible = true;
+            cityLabel.Visible = true;
+        }
+
         private void ChooseFileButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
-            openFileDialog.InitialDirectory = "G:\\0 MOJE PUZZLE\\OVERSEAS\\excel";
+            openFileDialog.InitialDirectory = "c\\";
             openFileDialog.Filter = "Excel files (*.xls, *.xlsx)|*.xls;*.xlsx";
             openFileDialog.FilterIndex = 0;
             openFileDialog.RestoreDirectory = true;
@@ -107,11 +135,15 @@ namespace Overseas
 
         private void addDataToGrid()
         {
-            mainDataGrid.Refresh();
+            mainDataGrid.DataSource = null;
+            mainDataGrid.AutoGenerateColumns = true;
+            mainDataGrid.Columns.Clear();
+
             mainDataGrid.DataSource = jsonResponsesList;
-            
+
+            rowColorSet();
             // prolaz kroz sve zapise
-            for(int i = 0; i <= 40; i++)
+            for (int i = 0; i <= 40; i++)
             {
                 if (i == 2 || i == 4 || i == 11) continue;
                 mainDataGrid.Columns[i].Visible = false;
@@ -120,13 +152,18 @@ namespace Overseas
             mainDataGrid.Columns[4].HeaderText = "Datum slanja";
             mainDataGrid.Columns[11].HeaderText = "Primatelj";
 
+            mainDataGrid.Columns[2].Width = 150;
+            mainDataGrid.Columns[4].Width = 150;
+            mainDataGrid.Columns[11].Width = 150;
         }
-
 
         private void MainDataGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             int selectedRow = e.RowIndex;
             if (selectedRow < 0) return;
+
+            // prikazi oznake
+            if(!statusDescriptionLabel.Visible) showAllLabels();
 
             countryLabel.Text = jsonResponsesList[selectedRow].Consignee.Country.ToString();
             postalCodeLabel.Text = jsonResponsesList[selectedRow].Consignee.PostalCode.ToString();
@@ -156,9 +193,6 @@ namespace Overseas
             detailsGrid.Columns[7].Width = 200;
         }
 
-        /// <summary>
-        /// Saves the object information
-        /// </summary>
         public static void Save<T>(string fileName, List<T> list)
         {
             // Gain code access to the file that we are going
@@ -206,6 +240,23 @@ namespace Overseas
 
             }
             return list;
+        }
+
+        private void rowColorSet()
+        {
+            foreach(DataGridViewRow row in mainDataGrid.Rows){
+                int index = row.Index;
+                JsonResponse jsonResponse = jsonResponsesList[index];
+                if (jsonResponse.LastShipmentTrace.StatusNumber == 41) row.DefaultCellStyle.BackColor = Color.Green; // naplaćeno
+                else if (jsonResponse.LastShipmentTrace.StatusNumber == 40) row.DefaultCellStyle.BackColor = Color.PaleGreen; // isporučeno
+                else if (jsonResponse.LastShipmentTrace.StatusNumber == 260) row.DefaultCellStyle.BackColor = Color.Red; // povrat
+                else row.DefaultCellStyle.BackColor = Color.Yellow;
+            }
+        }
+
+        private void SetColorsButton_Click(object sender, EventArgs e)
+        {
+            rowColorSet();
         }
     }
 }

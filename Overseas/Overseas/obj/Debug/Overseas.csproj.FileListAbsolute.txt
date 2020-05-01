@@ -1,7 +1,6 @@
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\bin\Debug\Overseas.exe.config
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\bin\Debug\Overseas.exe
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\bin\Debug\Overseas.pdb
-G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\obj\Debug\Overseas.csprojAssemblyReference.cache
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\obj\Debug\Overseas.Form1.resources
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\obj\Debug\Overseas.Properties.Resources.resources
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\obj\Debug\Overseas.csproj.GenerateResource.cache
@@ -19,3 +18,4 @@ G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\bin\Debug\Json.N
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\bin\Debug\Newtonsoft.Json.dll
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\bin\Debug\Newtonsoft.Json.xml
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\obj\Debug\Overseas.LoadingForm.resources
+G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\obj\Debug\Overseas.csprojAssemblyReference.cache
