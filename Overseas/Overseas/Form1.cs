@@ -81,8 +81,7 @@ namespace Overseas
                 return;
             }
 
-            // praznjenje liste
-
+            // praznjenje liste i datagrida
             mainDataGrid.DataSource = null;
             jsonResponsesList.Clear();
             mainDataGrid.Rows.Clear();
@@ -90,64 +89,72 @@ namespace Overseas
             // procitaj excel datoteku
             FileReader fileReader = new FileReader(selectedFile);
             DataTable dataTable = fileReader.readFile();
-
-            Console.WriteLine("Preuzimanje...");
-            // iteracija po redovima excel datoteke - PREUZIMANJE SVIH STATUSA POŠILJKI
-
+            
+            // prikazi loading formu
             LoadingForm loadingForm = new LoadingForm();
             loadingForm.Show();
             Application.DoEvents();
             this.Enabled = false;
 
-            
-
+            // iteracija po redovima excel datoteke - PREUZIMANJE SVIH STATUSA POŠILJKI
             Parallel.ForEach(dataTable.AsEnumerable(), row =>
                 {
-                    Console.WriteLine("ja sam novi thread");
-
                     // definira se stupac za broj paketa i dodaje u listu
                     string brojPosiljke = row["Broj paketa"].ToString();
                     if (row["Broj paketa"].ToString() == "") return;
 
+                    // preuzimanje podataka za broj posiljke
                     downloadDataAndAddToList(brojPosiljke);
                 }
             );
 
+            // uklanjanje loading forme
             loadingForm.Close();
-
             this.Enabled = true;
+
+            // zapisivanje u datoteku
             if (File.Exists(SAVED_LIST))
             {
                 File.Delete(SAVED_LIST);
             }
             Save(SAVED_LIST, jsonResponsesList);
+
+            // dodaj podatke na main grid
             addDataToGrid();
+
+            // sakrij oznaku vremena kreiranja datoteke jer su preuzeti novi podatci
             dateTimeFileCreatedLabel.Visible = false;
         }
 
         public void downloadDataAndAddToList(string brojPosiljke)
         {
+            // preuzmi podatke o posiljci na temelju broja posiljke i vrati JsonResponse objekt
             DataDownloader dataDownloader = new DataDownloader(brojPosiljke);
             JsonResponse jsonResponse = dataDownloader.getData();
+            // dodaj preuzeti objekt u listu
             jsonResponsesList.Add(jsonResponse);
         }
 
-
         private void addDataToGrid()
         {
+            // ocisti main grid
             mainDataGrid.DataSource = null;
             mainDataGrid.AutoGenerateColumns = true;
             mainDataGrid.Columns.Clear();
 
             mainDataGrid.DataSource = jsonResponsesList;
 
+            // oboji redove
             rowColorSet();
-            // prolaz kroz sve zapise
+
+            // sakrij sve stupce osim 2(broj posiljke), 4(datum slanja), 11(primatelj)
             for (int i = 0; i <= 40; i++)
             {
                 if (i == 2 || i == 4 || i == 11) continue;
                 mainDataGrid.Columns[i].Visible = false;
             }
+
+            // uredi main data grid
             mainDataGrid.Columns[2].HeaderText = "Broj pošiljke";
             mainDataGrid.Columns[4].HeaderText = "Datum slanja";
             mainDataGrid.Columns[11].HeaderText = "Primatelj";
@@ -159,22 +166,26 @@ namespace Overseas
 
         private void MainDataGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            // dohvati broj kliknutog retka
             int selectedRow = e.RowIndex;
             if (selectedRow < 0) return;
 
             // prikazi oznake
             if(!statusDescriptionLabel.Visible) showAllLabels();
 
+            // prikazi podatke (labele)
+              // sekcija 1
             countryLabel.Text = jsonResponsesList[selectedRow].Consignee.Country.ToString();
             postalCodeLabel.Text = jsonResponsesList[selectedRow].Consignee.PostalCode.ToString();
             cityLabel.Text = jsonResponsesList[selectedRow].Consignee.City.ToString();
-
+              // sekcija 2
             statusDescriptionLabel.Text = jsonResponsesList[selectedRow].StatusDescription.ToString();
-
+              // sekcija 3
             scanDateStringLabel.Text = jsonResponsesList[selectedRow].LastShipmentTrace.ScanDateString.ToString();
             ScanTimeStringLabel.Text = jsonResponsesList[selectedRow].LastShipmentTrace.ScanTimeString.ToString();
             statusNumberLabel.Text = jsonResponsesList[selectedRow].LastShipmentTrace.StatusNumber.ToString();
 
+            // postavi detalje u detaljni grid i uredi detaljni grid
             detailsGrid.DataSource = jsonResponsesList[selectedRow].Collies[0].Traces;
             detailsGrid.Columns[0].Visible = false;
             detailsGrid.Columns[2].Visible = false;
@@ -193,6 +204,7 @@ namespace Overseas
             detailsGrid.Columns[7].Width = 200;
         }
 
+        // genericka funkcija za spremanje liste tipa T
         public static void Save<T>(string fileName, List<T> list)
         {
             // Gain code access to the file that we are going
@@ -213,7 +225,7 @@ namespace Overseas
             }
         }
 
-
+        //genericka funkcija za ucitavanje liste tipa T
         public static List<T> Load<T>(string fileName)
         {
             var list = new List<T>();
@@ -242,6 +254,8 @@ namespace Overseas
             return list;
         }
 
+
+        // oboji redove u main gridu prema statusu posiljke
         private void rowColorSet()
         {
             foreach(DataGridViewRow row in mainDataGrid.Rows){

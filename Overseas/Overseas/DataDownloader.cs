@@ -13,10 +13,10 @@ namespace Overseas
             this.brojPosiljke = brojPosiljke;
         }
 
+        // vraca objekt JsonReponse
         public JsonResponse getData()
         {
             string url = "https://my.overseas.hr/system/api/track-and-trace/get-shipment-data/" + this.brojPosiljke;
-            //string url = "https://my.overseas.hr/system/api/track-and-trace/get-shipment-data/07074954";
 
             using (var w = new WebClient() { Encoding = Encoding.UTF8})
             {
@@ -32,7 +32,6 @@ namespace Overseas
                 // if string with JSON data is not empty, deserialize it to class and return its instance
                 JsonResponse jsonResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<JsonResponse>(json_data);
                 return jsonResponse;
-                //return !string.IsNullOrEmpty(json_data) ? Newtonsoft.Json.JsonConvert.DeserializeObject<JsonResponse>(json_data) : new JsonResponse();
             }
         }
     }
