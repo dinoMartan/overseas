@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 
 namespace Overseas
@@ -7,10 +9,18 @@ namespace Overseas
     class DataDownloader
     {
         private string brojPosiljke;
+        private string username;
+        private string password;
 
         public DataDownloader(string brojPosiljke)
         {
             this.brojPosiljke = brojPosiljke;
+        }
+
+        public DataDownloader(string username, string password)
+        {
+            this.username = username;
+            this.password = password;
         }
 
         // vraca objekt JsonReponse
@@ -29,10 +39,45 @@ namespace Overseas
                 catch (Exception e) {
                     Console.WriteLine(e.Message);
                 }
-                // if string with JSON data is not empty, deserialize it to class and return its instance
+                // deserialize json string to class and return its instance
                 JsonResponse jsonResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<JsonResponse>(json_data);
                 return jsonResponse;
             }
         }
+
+        public List<JsonResponse> getAllShippmentsAPI()
+        {
+            APIKeyFactory apiKeyFactory = new APIKeyFactory(this.username, this.password);
+            List<JsonResponse> jsonResponses = new List<JsonResponse>();
+            string apiKey = apiKeyFactory.getApikey();
+
+            Console.WriteLine(apiKey);
+
+            // TO DO: POST REQUEST TO API
+            
+
+            string url = "https://my.overseas.hr/system/api/track-and-trace/get-shipment-data/" + this.brojPosiljke;
+            
+            /*
+            string result;
+
+            using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+            {
+                client.BaseAddress = new Uri(url);
+                HttpResponseMessage response = client.GetAsync(apiKey).Result;
+                response.EnsureSuccessStatusCode();
+                result = response.Content.ReadAsStringAsync().Result;
+            }
+
+            // deserialize json string to class and return its instance
+            jsonResponses = Newtonsoft.Json.JsonConvert.DeserializeObject<List<JsonResponse>>(result);
+
+            */
+
+            return jsonResponses;
+            
+
+        }
+
     }
 }

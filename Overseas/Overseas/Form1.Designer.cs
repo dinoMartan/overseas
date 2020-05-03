@@ -56,6 +56,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.label9 = new System.Windows.Forms.Label();
+            this.getAllShippmentsApiButton = new System.Windows.Forms.Button();
+            this.refreshButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.mainDataGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.detailsGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -66,7 +68,7 @@
             // 
             // chooseFileButton
             // 
-            this.chooseFileButton.Location = new System.Drawing.Point(15, 460);
+            this.chooseFileButton.Location = new System.Drawing.Point(13, 460);
             this.chooseFileButton.Name = "chooseFileButton";
             this.chooseFileButton.Size = new System.Drawing.Size(75, 45);
             this.chooseFileButton.TabIndex = 0;
@@ -77,7 +79,7 @@
             // chosenFileLable
             // 
             this.chosenFileLable.AutoSize = true;
-            this.chosenFileLable.Location = new System.Drawing.Point(12, 508);
+            this.chosenFileLable.Location = new System.Drawing.Point(12, 511);
             this.chosenFileLable.Name = "chosenFileLable";
             this.chosenFileLable.Size = new System.Drawing.Size(118, 13);
             this.chosenFileLable.TabIndex = 1;
@@ -317,11 +319,33 @@
             this.label9.Text = "Ostalo";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // getAllShippmentsApiButton
+            // 
+            this.getAllShippmentsApiButton.Location = new System.Drawing.Point(1327, 148);
+            this.getAllShippmentsApiButton.Name = "getAllShippmentsApiButton";
+            this.getAllShippmentsApiButton.Size = new System.Drawing.Size(75, 23);
+            this.getAllShippmentsApiButton.TabIndex = 11;
+            this.getAllShippmentsApiButton.Text = "button1";
+            this.getAllShippmentsApiButton.UseVisualStyleBackColor = true;
+            this.getAllShippmentsApiButton.Click += new System.EventHandler(this.GetAllShippmentsApiButton_Click);
+            // 
+            // refreshButton
+            // 
+            this.refreshButton.Location = new System.Drawing.Point(13, 421);
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.Size = new System.Drawing.Size(75, 23);
+            this.refreshButton.TabIndex = 12;
+            this.refreshButton.Text = "Ažuriraj";
+            this.refreshButton.UseVisualStyleBackColor = true;
+            this.refreshButton.Click += new System.EventHandler(this.RefreshButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1464, 540);
+            this.Controls.Add(this.refreshButton);
+            this.Controls.Add(this.getAllShippmentsApiButton);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
@@ -395,6 +419,8 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button getAllShippmentsApiButton;
+        private System.Windows.Forms.Button refreshButton;
     }
 }
 
