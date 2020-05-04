@@ -21,30 +21,22 @@ namespace Overseas
 
         public string getApikey()
         {
-            string urlPost = "http://moje-puzzle.com/API/request.php";
+            string request = "getApiKey";
+            NameValueCollection data = new NameValueCollection();
+            data["username"] = this.username;
+            data["password"] = this.password;
+            data["getApiKey"] = "";
 
-            using (var wb = new WebClient())
-            {               
-                var data = new NameValueCollection();
-                data["username"] = this.username;
-                data["password"] = this.password;
-                data["getApiKey"] = "";
-                
-                try
-                {
-                    var response = wb.UploadValues(urlPost, "POST", data);
-                    string responseString = Encoding.UTF8.GetString(response);
-                    JObject json = JObject.Parse(responseString);
-                    this.apiKey = json["apiKey"].ToString();
-                }
+            PostRequest postRequest = new PostRequest(request, data);
 
-                catch(WebException e)
-                {
-                    //Alert.showAlert("Greška", e.Message);
-                    return null;
-                }                     
+            JObject jsonResponse = postRequest.sendPostRequest();
+
+            if(jsonResponse == null)
+            {
+                return null;
             }
 
+            this.apiKey = jsonResponse["apiKey"].ToString();
             return this.apiKey;
         }
     }
