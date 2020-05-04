@@ -60,6 +60,7 @@
             this.refreshButton = new System.Windows.Forms.Button();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.label10 = new System.Windows.Forms.Label();
+            this.testButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.mainDataGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.detailsGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -324,11 +325,11 @@
             // 
             // getAllShippmentsApiButton
             // 
-            this.getAllShippmentsApiButton.Location = new System.Drawing.Point(1327, 148);
+            this.getAllShippmentsApiButton.Location = new System.Drawing.Point(1318, 128);
             this.getAllShippmentsApiButton.Name = "getAllShippmentsApiButton";
-            this.getAllShippmentsApiButton.Size = new System.Drawing.Size(75, 23);
+            this.getAllShippmentsApiButton.Size = new System.Drawing.Size(84, 43);
             this.getAllShippmentsApiButton.TabIndex = 11;
-            this.getAllShippmentsApiButton.Text = "button1";
+            this.getAllShippmentsApiButton.Text = "Dohvati sve pošiljke";
             this.getAllShippmentsApiButton.UseVisualStyleBackColor = true;
             this.getAllShippmentsApiButton.Click += new System.EventHandler(this.GetAllShippmentsApiButton_Click);
             // 
@@ -361,11 +362,22 @@
             this.label10.Text = "Vraćeno";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // testButton
+            // 
+            this.testButton.Location = new System.Drawing.Point(1222, 148);
+            this.testButton.Name = "testButton";
+            this.testButton.Size = new System.Drawing.Size(75, 23);
+            this.testButton.TabIndex = 13;
+            this.testButton.Text = "button1";
+            this.testButton.UseVisualStyleBackColor = true;
+            this.testButton.Click += new System.EventHandler(this.TestButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1464, 540);
+            this.Controls.Add(this.testButton);
             this.Controls.Add(this.refreshButton);
             this.Controls.Add(this.getAllShippmentsApiButton);
             this.Controls.Add(this.label9);
@@ -448,6 +460,7 @@
         private System.Windows.Forms.Button refreshButton;
         private System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button testButton;
     }
 }
 

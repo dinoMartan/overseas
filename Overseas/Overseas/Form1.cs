@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -343,13 +345,37 @@ namespace Overseas
             }
             Save(SAVED_LIST, updatedJsonResponseList);
 
-            // dodaj podatke na main grid
-            //addDataToGrid();
-
             // sakrij oznaku vremena kreiranja datoteke jer su preuzeti novi podatci
             dateTimeFileCreatedLabel.Visible = true;
             dateTimeFileCreatedLabel.Text = "Ažurirano!";
 
+        }
+
+        private void TestButton_Click(object sender, EventArgs e)
+        {
+            // get metoda HttpRequesta
+            /*
+            NameValueCollection data = new NameValueCollection();
+            data["username"] = "dino";
+            data["password"] = "dino";
+            data["getApiKey"] = "";
+
+            HttpRequst httpRequst = new HttpRequst("getApiKey", data);
+            JObject response = httpRequst.sendGetRequest();
+
+            if (response == null)
+            {
+                Console.WriteLine("nema vrijednosti, vracen null");
+            }
+
+            //Console.WriteLine(response);
+            */
+
+            /*
+            HttpRequst httpRequst1 = new HttpRequst(request: "getShipmentByShipmentNumber", shipmentNumber: "07074954");
+            JObject response1 = httpRequst1.sendGetRequest();
+            JsonResponse responseJson = response1.ToObject<JsonResponse>();
+            */
         }
     }
 }

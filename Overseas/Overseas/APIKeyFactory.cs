@@ -27,7 +27,7 @@ namespace Overseas
             data["password"] = this.password;
             data["getApiKey"] = "";
 
-            PostRequest postRequest = new PostRequest(request, data);
+            HttpRequst postRequest = new HttpRequst(request, data);
 
             JObject jsonResponse = postRequest.sendPostRequest();
 
