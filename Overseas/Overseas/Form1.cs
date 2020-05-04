@@ -267,6 +267,9 @@ namespace Overseas
                 if (jsonResponse.LastShipmentTrace.StatusNumber == 41) row.DefaultCellStyle.BackColor = Color.Green; // naplaćeno
                 else if (jsonResponse.LastShipmentTrace.StatusNumber == 40) row.DefaultCellStyle.BackColor = Color.PaleGreen; // isporučeno
                 else if (jsonResponse.LastShipmentTrace.StatusNumber == 260) row.DefaultCellStyle.BackColor = Color.Red; // povrat
+                else if (jsonResponse.LastShipmentTrace.StatusNumber == 134) row.DefaultCellStyle.BackColor = Color.Black; // vraćeno
+                else if (jsonResponse.LastShipmentTrace.StatusNumber == 134) row.DefaultCellStyle.ForeColor = Color.White; // vraćeno
+
                 else row.DefaultCellStyle.BackColor = Color.Yellow;
             }
         }
@@ -289,6 +292,11 @@ namespace Overseas
 
             DataDownloader dataDownloader = new DataDownloader(username, password);
             List<JsonResponse> allShippmentsApiList = dataDownloader.getAllShippmentsAPI();
+
+            if(allShippmentsApiList == null)
+            {
+                return;
+            }
 
             jsonResponsesList = allShippmentsApiList;
             addDataToGrid(this.jsonResponsesList);
@@ -320,17 +328,6 @@ namespace Overseas
                 updatedJsonResponseList.Add(updatedJsonResponse);
             }
             );
-            
-            /*
-            foreach(JsonResponse jsonResponse in jsonResponsesList)
-            {
-                string brojPosiljke = jsonResponse.LastShipmentTrace.ParcelNumber;
-                Console.WriteLine(brojPosiljke);
-                // preuzimanje podataka za broj posiljke
-                JsonResponse updatedJsonResponse = downloadData(brojPosiljke);
-                updatedJsonResponseList.Add(updatedJsonResponse);
-            }
-            */
 
             Console.WriteLine("Updated list: " + updatedJsonResponseList);
             addDataToGrid(updatedJsonResponseList);

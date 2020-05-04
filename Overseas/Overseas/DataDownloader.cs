@@ -51,7 +51,13 @@ namespace Overseas
             List<JsonResponse> jsonResponses = new List<JsonResponse>();
             string apiKey = apiKeyFactory.getApikey();
 
-            Console.WriteLine(apiKey);
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                Alert.showAlert("Greška", "API ključ nije dohvaćen");
+                return null;
+            }
+
+            Console.WriteLine("Api key (DataDownloader): " + apiKey);
 
             // TO DO: POST REQUEST TO API
             
