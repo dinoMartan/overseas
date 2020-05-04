@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Text;
+using System.Collections.Specialized;
 
 namespace Overseas
 {
@@ -11,6 +10,7 @@ namespace Overseas
         private string brojPosiljke;
         private string username;
         private string password;
+        private string apiKey;
 
         public DataDownloader(string brojPosiljke)
         {
@@ -26,30 +26,29 @@ namespace Overseas
         // vraca objekt JsonReponse
         public JsonResponse getData()
         {
-            string url = "https://my.overseas.hr/system/api/track-and-trace/get-shipment-data/" + this.brojPosiljke;
+            JsonResponse jsonResponse = new JsonResponse();
+            HttpRequst httpRequst = new HttpRequst(request: "getShipmentByShipmentNumber", shipmentNumber: this.brojPosiljke);
+            JObject response = httpRequst.sendGetRequest();
 
-            using (var w = new WebClient() { Encoding = Encoding.UTF8})
+            try
             {
-                var json_data = string.Empty;
-                // attempt to download JSON data as a string
-                try
-                {
-                    json_data = w.DownloadString(url);
-                }
-                catch (Exception e) {
-                    Console.WriteLine(e.Message);
-                }
-                // deserialize json string to class and return its instance
-                JsonResponse jsonResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<JsonResponse>(json_data);
-                return jsonResponse;
+                jsonResponse = response.ToObject<JsonResponse>();
             }
+            catch(Exception e)
+            {
+                return null;
+            }
+            
+            return jsonResponse;
         }
 
         public List<JsonResponse> getAllShippmentsAPI()
         {
-            APIKeyFactory apiKeyFactory = new APIKeyFactory(this.username, this.password);
             List<JsonResponse> jsonResponses = new List<JsonResponse>();
-            string apiKey = apiKeyFactory.getApikey();
+
+            // dohvati api kljuc sa servera uz korisnicko ime i lozinku
+            APIKeyFactory apiKeyFactory = new APIKeyFactory(this.username, this.password);      
+            this.apiKey = apiKeyFactory.getApikey();
 
             if (string.IsNullOrEmpty(apiKey))
             {
@@ -61,24 +60,22 @@ namespace Overseas
 
             // TO DO: POST REQUEST TO API
             
+            // pripremi parametre
+            string request = "getApiKey";
+            NameValueCollection data = new NameValueCollection();
+            data["api-key"] = this.apiKey;
 
-            string url = "https://my.overseas.hr/system/api/track-and-trace/get-shipment-data/" + this.brojPosiljke;
-            
-            /*
-            string result;
-
-            using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+            HttpRequst httpRequst = new HttpRequst(request: request, data: data);
+            JObject response = httpRequst.sendPostRequest();
+            try
             {
-                client.BaseAddress = new Uri(url);
-                HttpResponseMessage response = client.GetAsync(apiKey).Result;
-                response.EnsureSuccessStatusCode();
-                result = response.Content.ReadAsStringAsync().Result;
+                jsonResponses = response.ToObject<List<JsonResponse>>();
+            }
+            catch(Exception e)
+            {
+                return null;
             }
 
-            // deserialize json string to class and return its instance
-            jsonResponses = Newtonsoft.Json.JsonConvert.DeserializeObject<List<JsonResponse>>(result);
-
-            */
 
             return jsonResponses;
             

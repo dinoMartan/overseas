@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Collections.Specialized;
-using System.Net;
-using System.Text;
 
 namespace Overseas
 
@@ -10,7 +8,6 @@ namespace Overseas
     {
         private string username;
         private string password;
-        private string url = "http://moje-puzzle.com/API/request.php?getApiKey&";
         private string apiKey;
 
         public APIKeyFactory(string username, string password)
@@ -21,21 +18,25 @@ namespace Overseas
 
         public string getApikey()
         {
+            // pripremi parametre
             string request = "getApiKey";
             NameValueCollection data = new NameValueCollection();
             data["username"] = this.username;
             data["password"] = this.password;
             data["getApiKey"] = "";
 
-            HttpRequst postRequest = new HttpRequst(request, data);
+            // kreiraj httpRequest s parametrima
+            HttpRequst httpRequest = new HttpRequst(request, data);
 
-            JObject jsonResponse = postRequest.sendPostRequest();
+            // metoda sendPostRequest dohvaca odgovor kao JObject
+            JObject jsonResponse = httpRequest.sendPostRequest();
 
             if(jsonResponse == null)
             {
                 return null;
             }
 
+            // vraca apiKey
             this.apiKey = jsonResponse["apiKey"].ToString();
             return this.apiKey;
         }

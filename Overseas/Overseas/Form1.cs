@@ -1,7 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -24,9 +22,10 @@ namespace Overseas
             hideAllLabels();
             if (File.Exists(SAVED_LIST))
             {
-                Console.WriteLine("File pronaden");
+                // ako postoji datoteka, ucitaj je u jsonResponsesList i dodaj u main grid
                 jsonResponsesList = Load<JsonResponse>(SAVED_LIST);
                 addDataToGrid(this.jsonResponsesList);
+                // stavi oznaku kada je kreirana trenutno ucitana datoteka
                 DateTime dateTimeFileCreated = File.GetCreationTime(SAVED_LIST);
                 dateTimeFileCreatedLabel.Text = "Popis ažuriran: " + dateTimeFileCreated.ToString();
             }
@@ -58,6 +57,7 @@ namespace Overseas
             cityLabel.Visible = true;
         }
 
+        // odaberi datoteku i njenu putanju spremi u selectedFile
         private void ChooseFileButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -73,7 +73,6 @@ namespace Overseas
                 chosenFileLable.Text = selectedFile;
             }
         }
-
 
         private void LoadFileButton_Click(object sender, EventArgs e)
         {
@@ -130,6 +129,7 @@ namespace Overseas
             dateTimeFileCreatedLabel.Visible = false;
         }
 
+        // izdvojena funkcija radi mogucnosti pokretanja u vise threadova
         public JsonResponse downloadData(string brojPosiljke)
         {
             // preuzmi podatke o posiljci na temelju broja posiljke i vrati JsonResponse objekt
@@ -259,7 +259,6 @@ namespace Overseas
             return list;
         }
 
-
         // oboji redove u main gridu prema statusu posiljke
         private void rowColorSet()
         {
@@ -269,8 +268,12 @@ namespace Overseas
                 if (jsonResponse.LastShipmentTrace.StatusNumber == 41) row.DefaultCellStyle.BackColor = Color.Green; // naplaćeno
                 else if (jsonResponse.LastShipmentTrace.StatusNumber == 40) row.DefaultCellStyle.BackColor = Color.PaleGreen; // isporučeno
                 else if (jsonResponse.LastShipmentTrace.StatusNumber == 260) row.DefaultCellStyle.BackColor = Color.Red; // povrat
-                else if (jsonResponse.LastShipmentTrace.StatusNumber == 134) row.DefaultCellStyle.BackColor = Color.Black; // vraćeno
-                else if (jsonResponse.LastShipmentTrace.StatusNumber == 134) row.DefaultCellStyle.ForeColor = Color.White; // vraćeno
+                else if (jsonResponse.LastShipmentTrace.StatusNumber == 134)
+                {
+                    row.DefaultCellStyle.BackColor = Color.Black; // vraćeno
+                    row.DefaultCellStyle.ForeColor = Color.White;
+                }
+
 
                 else row.DefaultCellStyle.BackColor = Color.Yellow;
             }
@@ -290,18 +293,31 @@ namespace Overseas
             string username = validationForm.username;
             string password = validationForm.password;
 
+            // provjeri jesu li podatci upisani
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password)) return;
 
+            // dataDownloader ce pozvati ApiKeyFactory koji uz korisnicko ime i lozinku vraca api kljuc
+            // funkcija getAllShipmentsAPI DataDownloadera od HttpRequesta koristi sendPostRequest()
+            // s kojim se vraca JObject pa DataDownloader pretvara u listu <JsonResponse> i vraca tu listu
             DataDownloader dataDownloader = new DataDownloader(username, password);
             List<JsonResponse> allShippmentsApiList = dataDownloader.getAllShippmentsAPI();
 
             if(allShippmentsApiList == null)
             {
+                Alert.showAlert("Greška", "SumTingWrung");
                 return;
             }
 
-            jsonResponsesList = allShippmentsApiList;
+            // ako su podatci stigli, ubaci ih u main grid
+            this.jsonResponsesList = allShippmentsApiList;
             addDataToGrid(this.jsonResponsesList);
+
+            // spremi novu listu
+            if (File.Exists(SAVED_LIST))
+            {
+                File.Delete(SAVED_LIST);
+            }
+            Save(SAVED_LIST, this.jsonResponsesList);
 
         }
 
@@ -353,29 +369,7 @@ namespace Overseas
 
         private void TestButton_Click(object sender, EventArgs e)
         {
-            // get metoda HttpRequesta
-            /*
-            NameValueCollection data = new NameValueCollection();
-            data["username"] = "dino";
-            data["password"] = "dino";
-            data["getApiKey"] = "";
 
-            HttpRequst httpRequst = new HttpRequst("getApiKey", data);
-            JObject response = httpRequst.sendGetRequest();
-
-            if (response == null)
-            {
-                Console.WriteLine("nema vrijednosti, vracen null");
-            }
-
-            //Console.WriteLine(response);
-            */
-
-            /*
-            HttpRequst httpRequst1 = new HttpRequst(request: "getShipmentByShipmentNumber", shipmentNumber: "07074954");
-            JObject response1 = httpRequst1.sendGetRequest();
-            JsonResponse responseJson = response1.ToObject<JsonResponse>();
-            */
         }
     }
 }
