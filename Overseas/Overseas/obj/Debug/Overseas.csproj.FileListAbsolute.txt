@@ -23,4 +23,3 @@ G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\obj\Debug\Overse
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\obj\Debug\Overseas.csproj.CopyComplete
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\obj\Debug\Overseas.exe
 G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\obj\Debug\Overseas.pdb
-G:\0 MOJE PUZZLE\OVERSEAS\Aplikacija\overseas\Overseas\Overseas\obj\Debug\Overseas.csprojAssemblyReference.cache

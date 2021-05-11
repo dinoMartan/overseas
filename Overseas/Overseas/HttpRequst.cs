@@ -94,9 +94,6 @@ namespace Overseas
                 }
             }
 
-
-            Console.WriteLine("gettttUrl: " + urlGet);
-
             using (var wb = new WebClient() { Encoding = Encoding.UTF8 })
             {
                 try

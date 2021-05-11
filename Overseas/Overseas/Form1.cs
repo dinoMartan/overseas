@@ -100,10 +100,11 @@ namespace Overseas
             // iteracija po redovima excel datoteke - PREUZIMANJE SVIH STATUSA POŠILJKI
             Parallel.ForEach(dataTable.AsEnumerable(), row =>
                 {
+                    if (row == null || row["Zadnji status"].ToString() == "") { return; }
                     // definira se stupac za broj paketa i dodaje u listu
-
                     string brojPosiljke = row["Broj paketa"].ToString();
-                    if (row["Broj paketa"].ToString() == "") return;
+
+                    if (row["Broj paketa"].ToString() == "" || row == null) return;
 
                     // preuzimanje podataka za broj posiljke
                     JsonResponse jsonResponse = downloadData(brojPosiljke);
@@ -146,6 +147,13 @@ namespace Overseas
             mainDataGrid.DataSource = null;
             mainDataGrid.AutoGenerateColumns = true;
             mainDataGrid.Columns.Clear();
+
+            jsonResponsesList.Sort(
+                delegate (JsonResponse p2, JsonResponse p1)
+                {
+                    return p1.SentOn.CompareTo(p2.SentOn);
+                }
+            );
 
             mainDataGrid.DataSource = jsonResponsesList;
 
@@ -265,6 +273,7 @@ namespace Overseas
             foreach(DataGridViewRow row in mainDataGrid.Rows){
                 int index = row.Index;
                 JsonResponse jsonResponse = jsonResponsesList[index];
+                if(jsonResponse == null) { continue; }
                 if (jsonResponse.LastShipmentTrace.StatusNumber == 41) row.DefaultCellStyle.BackColor = Color.Green; // naplaćeno
                 else if (jsonResponse.LastShipmentTrace.StatusNumber == 40) row.DefaultCellStyle.BackColor = Color.PaleGreen; // isporučeno
                 else if (jsonResponse.LastShipmentTrace.StatusNumber == 260) row.DefaultCellStyle.BackColor = Color.Red; // povrat
@@ -338,6 +347,7 @@ namespace Overseas
             
             Parallel.ForEach(jsonResponsesList, jsonResponse =>
             {
+                if (jsonResponse == null) { return; }
                 // provjeri je li posiljka isporucena - ako je, preskoci dohvacanje
                 if (jsonResponse.LastShipmentTrace.StatusNumber == 41 || jsonResponse.LastShipmentTrace.StatusNumber == 40) {
                     updatedJsonResponseList.Add(jsonResponse);
@@ -346,7 +356,6 @@ namespace Overseas
 
                 // definira se stupac za broj paketa i dodaje u listu
                 string brojPosiljke = jsonResponse.ShipmentNumber;
-                Console.WriteLine("Preuzimanje podatka za posiljku: " + brojPosiljke);
                 // preuzimanje podataka za broj posiljke
                 JsonResponse updatedJsonResponse = downloadData(brojPosiljke);
                 updatedJsonResponseList.Add(updatedJsonResponse);
@@ -356,7 +365,6 @@ namespace Overseas
             jsonResponsesList = null;
             jsonResponsesList = updatedJsonResponseList;
 
-            Console.WriteLine("Updated list: " + jsonResponsesList);
             addDataToGrid(jsonResponsesList);
 
             // uklanjanje loading forme

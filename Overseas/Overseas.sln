@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Overseas", "Overseas\Overseas.csproj", "{38081BE9-DB7A-4598-8470-3262FF6CCAE5}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Overseas-setup", "..\..\setup\Overseas-setup\Overseas-setup.vdproj", "{A7855E13-29D7-4516-864B-16499AD3F656}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OverseasInstaller", "OverseasInstaller\OverseasInstaller.vdproj", "{9AD4CCDE-F9AF-478F-8096-B19932B25BB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,8 +17,8 @@ Global
 		{38081BE9-DB7A-4598-8470-3262FF6CCAE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38081BE9-DB7A-4598-8470-3262FF6CCAE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38081BE9-DB7A-4598-8470-3262FF6CCAE5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A7855E13-29D7-4516-864B-16499AD3F656}.Debug|Any CPU.ActiveCfg = Release
-		{A7855E13-29D7-4516-864B-16499AD3F656}.Release|Any CPU.ActiveCfg = Release
+		{9AD4CCDE-F9AF-478F-8096-B19932B25BB7}.Debug|Any CPU.ActiveCfg = Debug
+		{9AD4CCDE-F9AF-478F-8096-B19932B25BB7}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -30,16 +30,28 @@ namespace Overseas
             HttpRequst httpRequst = new HttpRequst(request: "getShipmentByShipmentNumber", shipmentNumber: this.brojPosiljke);
             JObject response = httpRequst.sendGetRequest();
 
-            try
+            if (response != null)
             {
-                jsonResponse = response.ToObject<JsonResponse>();
+                try
+                {
+                    jsonResponse = response.ToObject<JsonResponse>();
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
+
+                return jsonResponse;
             }
-            catch(Exception e)
+
+            else
             {
                 return null;
             }
+
             
-            return jsonResponse;
+            
+            
         }
 
         public List<JsonResponse> getAllShippmentsAPI()
