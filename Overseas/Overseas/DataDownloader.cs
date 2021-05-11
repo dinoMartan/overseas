@@ -57,16 +57,14 @@ namespace Overseas
             }
 
             Console.WriteLine("Api key (DataDownloader): " + apiKey);
-
-            // TO DO: POST REQUEST TO API
             
             // pripremi parametre
-            string request = "getApiKey";
+            string request = "GetActiveShipments";
             NameValueCollection data = new NameValueCollection();
-            data["api-key"] = this.apiKey;
+            data["ApiKey"] = this.apiKey;
 
             HttpRequst httpRequst = new HttpRequst(request: request, data: data);
-            JObject response = httpRequst.sendPostRequest();
+            JObject response = httpRequst.sendGetRequest();
             try
             {
                 jsonResponses = response.ToObject<List<JsonResponse>>();

@@ -26,7 +26,7 @@ namespace Overseas
                 jsonResponsesList = Load<JsonResponse>(SAVED_LIST);
                 addDataToGrid(this.jsonResponsesList);
                 // stavi oznaku kada je kreirana trenutno ucitana datoteka
-                DateTime dateTimeFileCreated = File.GetCreationTime(SAVED_LIST);
+                DateTime dateTimeFileCreated = File.GetLastWriteTime(SAVED_LIST);
                 dateTimeFileCreatedLabel.Text = "Popis ažuriran: " + dateTimeFileCreated.ToString();
             }
         }
@@ -273,7 +273,7 @@ namespace Overseas
                     row.DefaultCellStyle.BackColor = Color.Black; // vraćeno
                     row.DefaultCellStyle.ForeColor = Color.White;
                 }
-
+                else if (jsonResponse.LastShipmentTrace.StatusNumber == 8) row.DefaultCellStyle.BackColor = Color.White; // zaprimljena posiljka
 
                 else row.DefaultCellStyle.BackColor = Color.Yellow;
             }
@@ -324,8 +324,8 @@ namespace Overseas
         private void RefreshButton_Click(object sender, EventArgs e)
         {
             // praznjenje liste i datagrida
-            mainDataGrid.DataSource = null;
-            mainDataGrid.Rows.Clear();
+            // mainDataGrid.DataSource = null;
+            // mainDataGrid.Rows.Clear();
 
             // prikazi loading formu
             LoadingForm loadingForm = new LoadingForm();
@@ -338,17 +338,26 @@ namespace Overseas
             
             Parallel.ForEach(jsonResponsesList, jsonResponse =>
             {
+                // provjeri je li posiljka isporucena - ako je, preskoci dohvacanje
+                if (jsonResponse.LastShipmentTrace.StatusNumber == 41 || jsonResponse.LastShipmentTrace.StatusNumber == 40) {
+                    updatedJsonResponseList.Add(jsonResponse);
+                    return;
+                }
+
                 // definira se stupac za broj paketa i dodaje u listu
                 string brojPosiljke = jsonResponse.ShipmentNumber;
-                Console.WriteLine(brojPosiljke);
+                Console.WriteLine("Preuzimanje podatka za posiljku: " + brojPosiljke);
                 // preuzimanje podataka za broj posiljke
                 JsonResponse updatedJsonResponse = downloadData(brojPosiljke);
                 updatedJsonResponseList.Add(updatedJsonResponse);
             }
             );
 
-            Console.WriteLine("Updated list: " + updatedJsonResponseList);
-            addDataToGrid(updatedJsonResponseList);
+            jsonResponsesList = null;
+            jsonResponsesList = updatedJsonResponseList;
+
+            Console.WriteLine("Updated list: " + jsonResponsesList);
+            addDataToGrid(jsonResponsesList);
 
             // uklanjanje loading forme
             loadingForm.Close();
@@ -361,7 +370,7 @@ namespace Overseas
             }
             Save(SAVED_LIST, updatedJsonResponseList);
 
-            // sakrij oznaku vremena kreiranja datoteke jer su preuzeti novi podatci
+            // napisi u oznaku da je azurirano
             dateTimeFileCreatedLabel.Visible = true;
             dateTimeFileCreatedLabel.Text = "Ažurirano!";
 

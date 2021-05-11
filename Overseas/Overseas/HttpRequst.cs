@@ -16,7 +16,9 @@ namespace Overseas
 
         private Dictionary<string, string> requestsUrls = new Dictionary<string, string>() {
             {"getApiKey", "http://moje-puzzle.com/API/request.php" },
-            {"getShipmentByShipmentNumber", "https://my.overseas.hr/system/api/track-and-trace/get-shipment-data/" }
+            {"getShipmentByShipmentNumber", "https://my.overseas.hr/system/api/track-and-trace/get-shipment-data/" },
+            {"GetShipmentStatusByShipmentId", "http://webapitest.overseas.hr/api/data/GetShipmentStatusByShipmentId" },
+            { "GetActiveShipments", "http://webapitest.overseas.hr/api/data/GetActiveShipments" }
         };
 
         public HttpRequst(string request, NameValueCollection data = null, string shipmentNumber = "")
@@ -111,7 +113,6 @@ namespace Overseas
 
             return this.jsonResponse;
         }
-
 
     }
 }
