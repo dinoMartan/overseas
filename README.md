@@ -20,5 +20,5 @@ And thats it. The app shows all shippments in the file, grabs all shipping data 
 Update (3.8.2021.) <br/><br/>
 
 
-Overseas changed their way of fetching data for shippments and this app no longer works. I am currently working on finding out the way to get data for shippments.
+Overseas changed their way of fetching data for shippments and this app no longer works. Since their system now supports functionalities of this app, this app was discontinued.
 
